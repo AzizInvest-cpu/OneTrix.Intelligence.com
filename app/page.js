@@ -1,133 +1,135 @@
-const tickers = [
-  { symbol: "BTC", price: "$118,420", change: 2.41 },
-  { symbol: "ETH", price: "$4,320", change: 1.82 },
-  { symbol: "NASDAQ", price: "23,450", change: 0.71 },
-  { symbol: "GOLD", price: "$3,420", change: -0.24 },
+const instruments = [
+  { symbol: "BTC", name: "Bitcoin", category: "Crypto", price: "$71,482.40", change: 2.41, spread: "$28.35", trend: [40, 42, 41, 45, 43, 48, 50, 49, 53, 55, 58, 60] },
+  { symbol: "ETH", name: "Ethereum", category: "Crypto", price: "$3,894.16", change: 1.62, spread: "$17.40", trend: [30, 31, 33, 32, 35, 34, 37, 39, 38, 41, 42, 44] },
+  { symbol: "NDX", name: "Nasdaq 100", category: "Equity", price: "$20,418.70", change: 0.74, spread: "$9.85", trend: [50, 49, 51, 53, 52, 54, 53, 56, 55, 57, 58, 59] },
+  { symbol: "SPX", name: "S&P 500", category: "Equity", price: "$5,623.11", change: 0.38, spread: "$16.30", trend: [45, 46, 45, 47, 46, 48, 47, 49, 48, 50, 49, 51] },
+  { symbol: "XAU", name: "Gold", category: "Commodity", price: "$2,412.85", change: 0.92, spread: "$62.00", trend: [55, 54, 56, 55, 58, 57, 60, 59, 62, 61, 64, 65] },
+  { symbol: "WTI", name: "Crude Oil", category: "Commodity", price: "$78.41", change: -1.84, spread: "$21.55", trend: [60, 58, 57, 55, 53, 54, 52, 50, 48, 47, 45, 44] },
+  { symbol: "DXY", name: "US Dollar Index", category: "FX", price: "103.28", change: -0.31, spread: "$0.31", trend: [52, 51, 52, 50, 51, 49, 50, 48, 49, 47, 48, 46] },
+  { symbol: "US10Y", name: "US 10Y Treasury Yield", category: "Rates", price: "4.182%", change: -0.62, spread: "0.03", trend: [58, 57, 58, 56, 57, 55, 56, 54, 55, 53, 54, 52] },
 ];
 
 const news = [
-  {
-    id: "1",
-    headline: "Fed keeps interest rates unchanged",
-    time: "2 soat oldin",
-    tags: [
-      { label: "Stocks", sentiment: "bullish" },
-      { label: "Crypto", sentiment: "neutral" },
-      { label: "USD", sentiment: "bearish" },
-    ],
-  },
-  {
-    id: "2",
-    headline: "Bitcoin ETF inflows hit weekly high",
-    time: "4 soat oldin",
-    tags: [
-      { label: "BTC", sentiment: "bullish" },
-      { label: "Altcoins", sentiment: "bullish" },
-    ],
-  },
-  {
-    id: "3",
-    headline: "Oil prices slip on oversupply concerns",
-    time: "6 soat oldin",
-    tags: [
-      { label: "Energy", sentiment: "bearish" },
-      { label: "Inflation", sentiment: "neutral" },
-    ],
-  },
+  { id: "1", headline: "Fed keeps interest rates unchanged", time: "2 soat oldin", tags: [{ label: "Stocks", sentiment: "bullish" }, { label: "Crypto", sentiment: "neutral" }, { label: "USD", sentiment: "bearish" }] },
+  { id: "2", headline: "Bitcoin ETF inflows hit weekly high", time: "4 soat oldin", tags: [{ label: "BTC", sentiment: "bullish" }, { label: "Altcoins", sentiment: "bullish" }] },
+  { id: "3", headline: "Oil prices slip on oversupply concerns", time: "6 soat oldin", tags: [{ label: "Energy", sentiment: "bearish" }, { label: "Inflation", sentiment: "neutral" }] },
 ];
 
-const signals = [
-  { label: "Risk sentiment", value: "72 / 100", sentiment: "bullish" },
-  { label: "BTC trend", value: "Bullish", sentiment: "bullish" },
-  { label: "Stock trend", value: "Bullish", sentiment: "bullish" },
-  { label: "USD trend", value: "Bearish", sentiment: "bearish" },
-];
+function Sparkline({ data, positive }) {
+  const w = 100, h = 32;
+  const max = Math.max(...data), min = Math.min(...data);
+  const range = max - min || 1;
+  const points = data
+    .map((v, i) => {
+      const x = (i / (data.length - 1)) * w;
+      const y = h - ((v - min) / range) * h;
+      return x + "," + y;
+    })
+    .join(" ");
+  const color = positive ? "#34d399" : "#fb7185";
+  const areaPoints = "0," + h + " " + points + " " + w + "," + h;
+  return (
+    <svg viewBox={"0 0 " + w + " " + h} className="sparkline" preserveAspectRatio="none">
+      <polygon points={areaPoints} fill={color} opacity="0.12" />
+      <polyline points={points} fill="none" stroke={color} strokeWidth="1.5" />
+    </svg>
+  );
+}
 
-const whaleEvents = [
-  { id: "1", description: "$250M BTC transferred to Binance", time: "18 daqiqa oldin", impact: "bearish" },
-  { id: "2", description: "50M USDT minted on Tron", time: "1 soat oldin", impact: "neutral" },
-  { id: "3", description: "1,200 BTC moved from exchange to cold wallet", time: "3 soat oldin", impact: "bullish" },
+const navSections = [
+  { title: "OVERVIEW", items: [{ label: "Dashboard", active: true }, { label: "Markets" }, { label: "Watchlist" }] },
+  { title: "RESEARCH", items: [{ label: "News" }, { label: "Intelligence" }] },
+  { title: "ANALYTICS", items: [{ label: "Signals" }, { label: "Correlation" }] },
 ];
 
 export default function Home() {
   return (
-    <div>
-      <header className="header">
-        <div className="logo">
-          OneTrix <span>Intelligence</span>
+    <div className="app-shell">
+      <aside className="sidebar">
+        <div className="brand">
+          <div className="brand-mark">1X</div>
+          <div>
+            <div className="brand-name">OneTrix Intelligence</div>
+            <div className="brand-tagline">ONE PLATFORM. EVERY MARKET.</div>
+          </div>
         </div>
-        <nav className="nav">
-          <span style={{ color: "#f1f5f9" }}>Crypto</span>
-          <span>Stocks</span>
-          <span>News</span>
-        </nav>
-      </header>
-
-      <main className="main">
-        <section className="ticker-grid">
-          {tickers.map((t) => (
-            <div key={t.symbol} className="card">
-              <div className="ticker-symbol">{t.symbol}</div>
-              <div className="ticker-price">{t.price}</div>
-              <div className={"ticker-change " + (t.change >= 0 ? "up" : "down")}>
-                {t.change >= 0 ? "+" : ""}
-                {t.change}%
+        {navSections.map((section) => (
+          <div className="nav-section" key={section.title}>
+            <div className="nav-section-title">{section.title}</div>
+            {section.items.map((item) => (
+              <div key={item.label} className={"nav-item" + (item.active ? " active" : "")}>
+                {item.label}
               </div>
-            </div>
-          ))}
-        </section>
+            ))}
+          </div>
+        ))}
+      </aside>
 
-        <section className="panel">
-          <div className="panel-title">Top market news</div>
-          {news.map((n) => (
-            <div key={n.id} className="panel-row">
-              <div className="row-top">
-                <p className="headline">{n.headline}</p>
-                <span className="time">{n.time}</span>
-              </div>
-              <div className="tags">
-                {n.tags.map((tag) => (
-                  <span key={tag.label} className={"tag " + tag.sentiment}>
-                    {tag.label}
+      <div className="content">
+        <header className="topbar">
+          <input className="search" placeholder="Search markets, assets, signals" />
+          <div className="topbar-right">
+            <span className="status-dot"></span>
+            <span className="status-text">MARKETS OPEN</span>
+          </div>
+        </header>
+
+        <main className="main">
+          <div className="page-heading">
+            <h1>Market Dashboard</h1>
+            <p className="page-sub">CROSS-ASSET OVERVIEW · SIMULATED DATASET</p>
+          </div>
+
+          <section className="instrument-grid">
+            {instruments.map((inst) => (
+              <div key={inst.symbol} className="instrument-card">
+                <div className="instrument-top">
+                  <div>
+                    <div className="instrument-symbol">{inst.symbol}</div>
+                    <div className="instrument-name">{inst.name}</div>
+                  </div>
+                  <span className={"badge " + (inst.change >= 0 ? "up" : "down")}>
+                    {inst.change >= 0 ? "▲" : "▼"}
                   </span>
-                ))}
-              </div>
-            </div>
-          ))}
-        </section>
-
-        <div className="two-col">
-          <section className="panel">
-            <div className="panel-title">Market signals</div>
-            {signals.map((s) => (
-              <div key={s.label} className="signal-row">
-                <span className="signal-label">{s.label}</span>
-                <span className="signal-value">
-                  <span className={"dot " + s.sentiment}></span>
-                  {s.value}
-                </span>
-              </div>
-            ))}
-          </section>
-
-          <section className="panel">
-            <div className="panel-title">Whale activity</div>
-            {whaleEvents.map((w) => (
-              <div key={w.id} className="panel-row">
-                <div className="row-top">
-                  <span className="headline">{w.description}</span>
-                  <span className={"dot " + w.impact}></span>
                 </div>
-                <span className="time">{w.time}</span>
+                <div className="instrument-price">{inst.price}</div>
+                <div className={"instrument-change " + (inst.change >= 0 ? "up" : "down")}>
+                  {inst.change >= 0 ? "+" : ""}
+                  {inst.change}%
+                </div>
+                <Sparkline data={inst.trend} positive={inst.change >= 0} />
+                <div className="instrument-foot">
+                  <span>{inst.category}</span>
+                  <span>{inst.spread}</span>
+                </div>
               </div>
             ))}
           </section>
-        </div>
-      </main>
 
-      <footer className="footer">
-        OneTrix Intelligence — demo data, real-time feeds coming soon
-      </footer>
+          <section className="panel">
+            <div className="panel-title">Top market news</div>
+            {news.map((n) => (
+              <div key={n.id} className="panel-row">
+                <div className="row-top">
+                  <p className="headline">{n.headline}</p>
+                  <span className="time">{n.time}</span>
+                </div>
+                <div className="tags">
+                  {n.tags.map((tag) => (
+                    <span key={tag.label} className={"tag " + tag.sentiment}>
+                      {tag.label}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </section>
+        </main>
+
+        <footer className="footer">
+          OneTrix Intelligence — demo data, real-time feeds coming soon
+        </footer>
+      </div>
     </div>
   );
 }

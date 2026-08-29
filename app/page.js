@@ -42,7 +42,16 @@ const navSections = [
   { title: "ANALYTICS", items: [{ label: "Signals" }, { label: "Correlation" }] },
 ];
 
+const advancers = instruments.filter((i) => i.change >= 0).length;
+const decliners = instruments.length - advancers;
+
 export default function Home() {
+  const now = new Date();
+  const sessionTime =
+    String(now.getUTCHours()).padStart(2, "0") +
+    ":" +
+    String(now.getUTCMinutes()).padStart(2, "0") +
+    " UTC";
   return (
     <div className="app-shell">
       <aside className="sidebar">
@@ -71,13 +80,23 @@ export default function Home() {
           <div className="topbar-right">
             <span className="status-dot"></span>
             <span className="status-text">MARKETS OPEN</span>
+            <div className="session-time">SESSION · TASHKENT {sessionTime}</div>
+            <div className="user-chip">
+              <div className="user-avatar">OT</div>
+              <div>
+                <div className="user-name">OneTrix Demo</div>
+                <div className="user-role">INSTITUTIONAL</div>
+              </div>
+            </div>
           </div>
         </header>
 
         <main className="main">
           <div className="page-heading">
             <h1>Market Dashboard</h1>
-            <p className="page-sub">CROSS-ASSET OVERVIEW · SIMULATED DATASET</p>
+            <p className="page-sub">
+              CROSS-ASSET OVERVIEW · SIMULATED DATASET &nbsp;·&nbsp; ADVANCERS {advancers} / DECLINERS {decliners}
+            </p>
           </div>
 
           <section className="instrument-grid">
@@ -104,6 +123,41 @@ export default function Home() {
                 </div>
               </div>
             ))}
+          </section>
+
+          <section className="panel">
+            <div className="panel-title">Market overview</div>
+            <table className="overview-table">
+              <thead>
+                <tr>
+                  <th>Instrument</th>
+                  <th>Trend</th>
+                  <th>Last</th>
+                  <th>Chg 24h</th>
+                  <th>Category</th>
+                </tr>
+              </thead>
+              <tbody>
+                {instruments.map((inst) => (
+                  <tr key={inst.symbol}>
+                    <td>
+                      <span className={"table-dot " + (inst.change >= 0 ? "up" : "down")}></span>
+                      <span className="table-symbol">{inst.symbol}</span>
+                      <span className="table-name">{inst.name}</span>
+                    </td>
+                    <td className="table-trend">
+                      <Sparkline data={inst.trend} positive={inst.change >= 0} />
+                    </td>
+                    <td>{inst.price}</td>
+                    <td className={inst.change >= 0 ? "up" : "down"}>
+                      {inst.change >= 0 ? "+" : ""}
+                      {inst.change}%
+                    </td>
+                    <td className="table-category">{inst.category}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </section>
 
           <section className="panel">

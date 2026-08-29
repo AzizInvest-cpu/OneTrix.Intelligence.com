@@ -122,9 +122,50 @@ body {
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 16px;
   font-size: 12px;
   color: #94a3b8;
+}
+
+.session-time {
+  font-size: 11px;
+  color: #64748b;
+  letter-spacing: 0.03em;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  padding-left: 16px;
+}
+
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  padding-left: 16px;
+}
+
+.user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #22d3ee, #6366f1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #0a0e14;
+}
+
+.user-name {
+  font-size: 12px;
+  color: #e2e8f0;
+  line-height: 1.2;
+}
+
+.user-role {
+  font-size: 9px;
+  color: #64748b;
+  letter-spacing: 0.04em;
 }
 
 .status-dot {
@@ -318,6 +359,80 @@ body {
   color: #fbbf24;
   background: rgba(251, 191, 36, 0.1);
   border-color: rgba(251, 191, 36, 0.2);
+}
+
+.overview-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.overview-table th {
+  text-align: left;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: #64748b;
+  text-transform: uppercase;
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.overview-table td {
+  padding: 12px 20px;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  vertical-align: middle;
+}
+
+.overview-table tr:last-child td {
+  border-bottom: none;
+}
+
+.table-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.table-dot.up {
+  background: #34d399;
+}
+
+.table-dot.down {
+  background: #fb7185;
+}
+
+.table-symbol {
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.table-name {
+  color: #64748b;
+  font-size: 11px;
+}
+
+.table-trend {
+  width: 100px;
+}
+
+.table-trend .sparkline {
+  margin-top: 0;
+}
+
+.table-category {
+  color: #64748b;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.overview-table td.up {
+  color: #34d399;
+}
+
+.overview-table td.down {
+  color: #fb7185;
 }
 
 .footer {

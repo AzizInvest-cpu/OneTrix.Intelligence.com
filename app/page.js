@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const instruments = [
   { symbol: "BTC", name: "Bitcoin", category: "Crypto", price: "$71,482.40", change: 2.41, spread: "$28.35", trend: [40, 42, 41, 45, 43, 48, 50, 49, 53, 55, 58, 60] },
   { symbol: "ETH", name: "Ethereum", category: "Crypto", price: "$3,894.16", change: 1.62, spread: "$17.40", trend: [30, 31, 33, 32, 35, 34, 37, 39, 38, 41, 42, 44] },
@@ -7,12 +9,6 @@ const instruments = [
   { symbol: "WTI", name: "Crude Oil", category: "Commodity", price: "$78.41", change: -1.84, spread: "$21.55", trend: [60, 58, 57, 55, 53, 54, 52, 50, 48, 47, 45, 44] },
   { symbol: "DXY", name: "US Dollar Index", category: "FX", price: "103.28", change: -0.31, spread: "$0.31", trend: [52, 51, 52, 50, 51, 49, 50, 48, 49, 47, 48, 46] },
   { symbol: "US10Y", name: "US 10Y Treasury Yield", category: "Rates", price: "4.182%", change: -0.62, spread: "0.03", trend: [58, 57, 58, 56, 57, 55, 56, 54, 55, 53, 54, 52] },
-];
-
-const news = [
-  { id: "1", headline: "Fed keeps interest rates unchanged", time: "2 soat oldin", tags: [{ label: "Stocks", sentiment: "bullish" }, { label: "Crypto", sentiment: "neutral" }, { label: "USD", sentiment: "bearish" }] },
-  { id: "2", headline: "Bitcoin ETF inflows hit weekly high", time: "4 soat oldin", tags: [{ label: "BTC", sentiment: "bullish" }, { label: "Altcoins", sentiment: "bullish" }] },
-  { id: "3", headline: "Oil prices slip on oversupply concerns", time: "6 soat oldin", tags: [{ label: "Energy", sentiment: "bearish" }, { label: "Inflation", sentiment: "neutral" }] },
 ];
 
 function Sparkline({ data, positive }) {
@@ -36,154 +32,91 @@ function Sparkline({ data, positive }) {
   );
 }
 
-const navSections = [
-  { title: "OVERVIEW", items: [{ label: "Dashboard", active: true }, { label: "Markets" }, { label: "Watchlist" }] },
-  { title: "RESEARCH", items: [{ label: "News" }, { label: "Intelligence" }] },
-  { title: "ANALYTICS", items: [{ label: "Signals" }, { label: "Correlation" }] },
-];
-
 const advancers = instruments.filter((i) => i.change >= 0).length;
 const decliners = instruments.length - advancers;
 
 export default function Home() {
-  const now = new Date();
-  const sessionTime =
-    String(now.getUTCHours()).padStart(2, "0") +
-    ":" +
-    String(now.getUTCMinutes()).padStart(2, "0") +
-    " UTC";
   return (
-    <div className="app-shell">
-      <aside className="sidebar">
-        <div className="brand">
-          <div className="brand-mark">1X</div>
-          <div>
-            <div className="brand-name">OneTrix Intelligence</div>
-            <div className="brand-tagline">ONE PLATFORM. EVERY MARKET.</div>
-          </div>
-        </div>
-        {navSections.map((section) => (
-          <div className="nav-section" key={section.title}>
-            <div className="nav-section-title">{section.title}</div>
-            {section.items.map((item) => (
-              <div key={item.label} className={"nav-item" + (item.active ? " active" : "")}>
-                {item.label}
-              </div>
-            ))}
-          </div>
-        ))}
-      </aside>
+    <>
+      <div className="page-heading">
+        <h1>Market Dashboard</h1>
+        <p className="page-sub">
+          CROSS-ASSET OVERVIEW · SIMULATED DATASET &nbsp;·&nbsp; ADVANCERS {advancers} / DECLINERS {decliners}
+        </p>
+      </div>
 
-      <div className="content">
-        <header className="topbar">
-          <input className="search" placeholder="Search markets, assets, signals" />
-          <div className="topbar-right">
-            <span className="status-dot"></span>
-            <span className="status-text">MARKETS OPEN</span>
-            <div className="session-time">SESSION · TASHKENT {sessionTime}</div>
-            <div className="user-chip">
-              <div className="user-avatar">OT</div>
+      <section className="instrument-grid">
+        {instruments.map((inst) => (
+          <div key={inst.symbol} className="instrument-card">
+            <div className="instrument-top">
               <div>
-                <div className="user-name">OneTrix Demo</div>
-                <div className="user-role">INSTITUTIONAL</div>
+                <div className="instrument-symbol">{inst.symbol}</div>
+                <div className="instrument-name">{inst.name}</div>
               </div>
+              <span className={"badge " + (inst.change >= 0 ? "up" : "down")}>
+                {inst.change >= 0 ? "▲" : "▼"}
+              </span>
+            </div>
+            <div className="instrument-price">{inst.price}</div>
+            <div className={"instrument-change " + (inst.change >= 0 ? "up" : "down")}>
+              {inst.change >= 0 ? "+" : ""}
+              {inst.change}%
+            </div>
+            <Sparkline data={inst.trend} positive={inst.change >= 0} />
+            <div className="instrument-foot">
+              <span>{inst.category}</span>
+              <span>{inst.spread}</span>
             </div>
           </div>
-        </header>
+        ))}
+      </section>
 
-        <main className="main">
-          <div className="page-heading">
-            <h1>Market Dashboard</h1>
-            <p className="page-sub">
-              CROSS-ASSET OVERVIEW · SIMULATED DATASET &nbsp;·&nbsp; ADVANCERS {advancers} / DECLINERS {decliners}
-            </p>
-          </div>
-
-          <section className="instrument-grid">
+      <section className="panel">
+        <div className="panel-title">Market overview</div>
+        <table className="overview-table">
+          <thead>
+            <tr>
+              <th>Instrument</th>
+              <th>Trend</th>
+              <th>Last</th>
+              <th>Chg 24h</th>
+              <th>Category</th>
+            </tr>
+          </thead>
+          <tbody>
             {instruments.map((inst) => (
-              <div key={inst.symbol} className="instrument-card">
-                <div className="instrument-top">
-                  <div>
-                    <div className="instrument-symbol">{inst.symbol}</div>
-                    <div className="instrument-name">{inst.name}</div>
-                  </div>
-                  <span className={"badge " + (inst.change >= 0 ? "up" : "down")}>
-                    {inst.change >= 0 ? "▲" : "▼"}
-                  </span>
-                </div>
-                <div className="instrument-price">{inst.price}</div>
-                <div className={"instrument-change " + (inst.change >= 0 ? "up" : "down")}>
+              <tr key={inst.symbol}>
+                <td>
+                  <span className={"table-dot " + (inst.change >= 0 ? "up" : "down")}></span>
+                  <span className="table-symbol">{inst.symbol}</span>
+                  <span className="table-name">{inst.name}</span>
+                </td>
+                <td className="table-trend">
+                  <Sparkline data={inst.trend} positive={inst.change >= 0} />
+                </td>
+                <td>{inst.price}</td>
+                <td className={inst.change >= 0 ? "up" : "down"}>
                   {inst.change >= 0 ? "+" : ""}
                   {inst.change}%
-                </div>
-                <Sparkline data={inst.trend} positive={inst.change >= 0} />
-                <div className="instrument-foot">
-                  <span>{inst.category}</span>
-                  <span>{inst.spread}</span>
-                </div>
-              </div>
+                </td>
+                <td className="table-category">{inst.category}</td>
+              </tr>
             ))}
-          </section>
+          </tbody>
+        </table>
+      </section>
 
-          <section className="panel">
-            <div className="panel-title">Market overview</div>
-            <table className="overview-table">
-              <thead>
-                <tr>
-                  <th>Instrument</th>
-                  <th>Trend</th>
-                  <th>Last</th>
-                  <th>Chg 24h</th>
-                  <th>Category</th>
-                </tr>
-              </thead>
-              <tbody>
-                {instruments.map((inst) => (
-                  <tr key={inst.symbol}>
-                    <td>
-                      <span className={"table-dot " + (inst.change >= 0 ? "up" : "down")}></span>
-                      <span className="table-symbol">{inst.symbol}</span>
-                      <span className="table-name">{inst.name}</span>
-                    </td>
-                    <td className="table-trend">
-                      <Sparkline data={inst.trend} positive={inst.change >= 0} />
-                    </td>
-                    <td>{inst.price}</td>
-                    <td className={inst.change >= 0 ? "up" : "down"}>
-                      {inst.change >= 0 ? "+" : ""}
-                      {inst.change}%
-                    </td>
-                    <td className="table-category">{inst.category}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </section>
-
-          <section className="panel">
-            <div className="panel-title">Top market news</div>
-            {news.map((n) => (
-              <div key={n.id} className="panel-row">
-                <div className="row-top">
-                  <p className="headline">{n.headline}</p>
-                  <span className="time">{n.time}</span>
-                </div>
-                <div className="tags">
-                  {n.tags.map((tag) => (
-                    <span key={tag.label} className={"tag " + tag.sentiment}>
-                      {tag.label}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </section>
-        </main>
-
-        <footer className="footer">
-          OneTrix Intelligence — demo data, real-time feeds coming soon
-        </footer>
-      </div>
-    </div>
+      <section className="panel">
+        <div className="panel-title-row">
+          <div className="panel-title">Latest market news</div>
+          <Link href="/news" className="panel-link">
+            View all →
+          </Link>
+        </div>
+        <div className="panel-empty">
+          Full news feed with live articles is on the <Link href="/news">News</Link> page.
+        </div>
+      </section>
+    </>
   );
 }

@@ -54,18 +54,12 @@ export default async function NewsPage() {
       ) : (
         <section className="news-grid">
           {top.map((a) => (
-            
-              key={a.id || a.guid}
-              href={a.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="news-card"
-            >
-              {a.imageurl && (
+            <a href={a.url} key={a.id || a.guid} target="_blank" rel="noopener noreferrer" className="news-card">
+              {a.imageurl ? (
                 <div className="news-card-image">
                   <img src={a.imageurl} alt="" loading="lazy" />
                 </div>
-              )}
+              ) : null}
               <div className="news-card-body">
                 <div className="news-card-meta">
                   <span className="news-card-source">{a.source_info?.name || a.source}</span>

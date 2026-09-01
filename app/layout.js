@@ -10,11 +10,25 @@ export const metadata = {
 const navSections = [
   {
     title: "OVERVIEW",
-    items: [{ label: "Dashboard", href: "/" }],
+    items: [
+      { label: "Dashboard", href: "/" },
+      { label: "Markets", soon: true },
+      { label: "Watchlist", soon: true },
+    ],
   },
   {
     title: "RESEARCH",
-    items: [{ label: "News", href: "/news" }],
+    items: [
+      { label: "News", href: "/news" },
+      { label: "Intelligence", soon: true },
+    ],
+  },
+  {
+    title: "ANALYTICS",
+    items: [
+      { label: "Signals", soon: true },
+      { label: "Correlation", soon: true },
+    ],
   },
 ];
 
@@ -59,7 +73,13 @@ export default function RootLayout({ children }) {
             <main className="main">{children}</main>
 
             <footer className="footer">
-              OneTrix Intelligence — demo data, real-time feeds coming soon
+              <div>OneTrix Intelligence — demo data, real-time feeds coming soon</div>
+              <div className="footer-credit">
+                Azizbek Mehmonov · Founder &amp; Researcher · Telegram:{" "}
+                <a href="https://t.me/AzizbekMehmonov" target="_blank" rel="noopener noreferrer">
+                  @AzizbekMehmonov
+                </a>
+              </div>
             </footer>
           </div>
         </div>

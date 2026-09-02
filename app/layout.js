@@ -45,13 +45,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        <link rel="icon" href="/favicon-32.png" sizes="32x32" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body>
         <div className="app-shell">
           <aside className="sidebar">
             <div className="brand">
-              <div className="brand-mark">1X</div>
+              <img src="/logo.png" alt="OneTrix Intelligence" className="brand-mark" />
               <div>
                 <div className="brand-name">OneTrix Intelligence</div>
                 <div className="brand-tagline">ONE PLATFORM. EVERY MARKET.</div>

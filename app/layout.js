@@ -1,6 +1,7 @@
 import "./globals.css";
 import ThemeToggle from "./components/ThemeToggle";
 import NavLinks from "./components/NavLinks";
+import IntroSplash from "./components/IntroSplash";
 
 export const metadata = {
   title: "OneTrix Intelligence",
@@ -50,6 +51,7 @@ export default function RootLayout({ children }) {
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body>
+        <IntroSplash />
         <div className="app-shell">
           <aside className="sidebar">
             <div className="brand">

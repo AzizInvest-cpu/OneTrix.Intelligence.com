@@ -4,6 +4,8 @@ import { useLayoutEffect, useState } from "react";
 
 const STORAGE_KEY = "onetrix-intro-seen";
 
+const navItems = ["Dashboard", "Markets", "Watchlist", "News", "Intelligence", "Signals", "Correlation"];
+
 export default function IntroSplash() {
   const [phase, setPhase] = useState("visible");
 
@@ -14,10 +16,6 @@ export default function IntroSplash() {
         return;
       }
     } catch (e) {}
-
-    const timer = setTimeout(dismiss, 4000);
-    return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function dismiss() {
@@ -31,12 +29,24 @@ export default function IntroSplash() {
   if (phase === "hidden") return null;
 
   return (
-    <div
-      className={"intro-splash" + (phase === "hiding" ? " intro-splash-hide" : "")}
-      onClick={dismiss}
-    >
+    <div className={"intro-splash" + (phase === "hiding" ? " intro-splash-hide" : "")}>
       <div className="intro-stars"></div>
       <div className="intro-horizon"></div>
+
+      <header className="intro-nav">
+        <div className="intro-nav-brand">
+          <img src="/logo.png" alt="OneTrix Intelligence" className="intro-nav-logo" />
+          <span>OneTrix</span>
+        </div>
+        <nav className="intro-nav-links">
+          {navItems.map((item) => (
+            <button key={item} className="intro-nav-link" onClick={dismiss}>
+              {item}
+            </button>
+          ))}
+        </nav>
+      </header>
+
       <div className="intro-content">
         <img src="/logo.png" alt="OneTrix Intelligence" className="intro-logo" />
         <div className="intro-title">
@@ -45,7 +55,9 @@ export default function IntroSplash() {
         </div>
         <div className="intro-subtitle">INTELLIGENCE</div>
         <div className="intro-tagline">See The Market Deeper.</div>
-        <div className="intro-hint">Tap anywhere to continue</div>
+        <button className="intro-cta" onClick={dismiss}>
+          Platformaga kirish
+        </button>
       </div>
     </div>
   );

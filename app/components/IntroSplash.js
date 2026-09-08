@@ -11,7 +11,7 @@ export default function IntroSplash() {
 
   useLayoutEffect(() => {
     try {
-      if (localStorage.getItem(STORAGE_KEY)) {
+      if (sessionStorage.getItem(STORAGE_KEY)) {
         setPhase("hidden");
         return;
       }
@@ -20,7 +20,7 @@ export default function IntroSplash() {
 
   function dismiss() {
     try {
-      localStorage.setItem(STORAGE_KEY, "1");
+      sessionStorage.setItem(STORAGE_KEY, "1");
     } catch (e) {}
     setPhase("hiding");
     setTimeout(() => setPhase("hidden"), 600);
@@ -30,9 +30,6 @@ export default function IntroSplash() {
 
   return (
     <div className={"intro-splash" + (phase === "hiding" ? " intro-splash-hide" : "")}>
-      <div className="intro-stars"></div>
-      <div className="intro-horizon"></div>
-
       <header className="intro-nav">
         <div className="intro-nav-brand">
           <img src="/logo.png" alt="OneTrix Intelligence" className="intro-nav-logo" />
@@ -48,13 +45,6 @@ export default function IntroSplash() {
       </header>
 
       <div className="intro-content">
-        <img src="/logo.png" alt="OneTrix Intelligence" className="intro-logo" />
-        <div className="intro-title">
-          <span className="intro-title-one">One</span>
-          <span className="intro-title-trix">Trix</span>
-        </div>
-        <div className="intro-subtitle">INTELLIGENCE</div>
-        <div className="intro-tagline">See The Market Deeper.</div>
         <button className="intro-cta" onClick={dismiss}>
           Platformaga kirish
         </button>

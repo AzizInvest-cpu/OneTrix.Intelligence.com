@@ -1,3 +1,5 @@
+import NewsFeed from "../components/NewsFeed";
+
 export const metadata = {
   title: "News — OneTrix Intelligence",
 };
@@ -5,8 +7,9 @@ export const metadata = {
 export const revalidate = 600;
 
 const FEEDS = [
-  { url: "https://cointelegraph.com/rss", source: "Cointelegraph" },
-  { url: "https://www.coindesk.com/arc/outboundfeeds/rss/", source: "CoinDesk" },
+  { url: "https://cointelegraph.com/rss", source: "Cointelegraph", category: "crypto" },
+  { url: "https://www.coindesk.com/arc/outboundfeeds/rss/", source: "CoinDesk", category: "crypto" },
+  { url: "https://feeds.content.dowjones.io/public/rss/mw_topstories", source: "MarketWatch", category: "stock" },
 ];
 
 function decodeEntities(str) {
@@ -86,9 +89,11 @@ async function fetchFeed(feed) {
         title,
         link,
         pubDate,
+        timeAgo: timeAgo(pubDate),
         excerpt: excerpt(desc, 140),
         image,
         source: feed.source,
+        category: feed.category,
       };
     });
   } catch (err) {
@@ -100,47 +105,20 @@ async function getNews() {
   const results = await Promise.all(FEEDS.map(fetchFeed));
   const all = results.flat().filter((a) => a.title && a.link);
   all.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
-  return all;
+  return all.slice(0, 40);
 }
 
 export default async function NewsPage() {
   const articles = await getNews();
-  const top = articles.slice(0, 24);
 
   return (
     <>
       <div className="page-heading">
         <h1>Market News</h1>
-        <p className="page-sub">LIVE FEED · AGGREGATED FROM CRYPTO NEWS SOURCES</p>
+        <p className="page-sub">LIVE FEED · AGGREGATED FROM CRYPTO & STOCK SOURCES</p>
       </div>
 
-      {top.length === 0 ? (
-        <section className="panel">
-          <div className="panel-empty">
-            Yangiliklarni yuklab bo'lmadi. Birozdan so'ng qayta urinib ko'ring.
-          </div>
-        </section>
-      ) : (
-        <section className="news-grid">
-          {top.map((a, i) => (
-            <a href={a.link} key={a.link + i} target="_blank" rel="noopener noreferrer" className="news-card">
-              {a.image ? (
-                <div className="news-card-image">
-                  <img src={a.image} alt="" loading="lazy" />
-                </div>
-              ) : null}
-              <div className="news-card-body">
-                <div className="news-card-meta">
-                  <span className="news-card-source">{a.source}</span>
-                  <span className="news-card-time">{timeAgo(a.pubDate)}</span>
-                </div>
-                <h3 className="news-card-title">{a.title}</h3>
-                <p className="news-card-excerpt">{a.excerpt}</p>
-              </div>
-            </a>
-          ))}
-        </section>
-      )}
+      <NewsFeed articles={articles} />
     </>
   );
 }
